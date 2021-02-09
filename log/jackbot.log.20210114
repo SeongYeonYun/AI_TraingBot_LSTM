@@ -1,0 +1,218 @@
+[DEBUG|logging_pack.py:45] 2021-01-14 02:04:37,233 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 02:04:37,233 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 02:04:37,234 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 02:04:37,234 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 02:04:37,234 > critical 모드!
+[DEBUG|open_api.py:309] 2021-01-14 02:04:52,354 > connected
+[DEBUG|open_api.py:250] 2021-01-14 02:04:52,354 > account_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:257] 2021-01-14 02:04:52,354 > get_login_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:253] 2021-01-14 02:04:52,354 > 계좌번호 : 8155059611
+[DEBUG|open_api.py:166] 2021-01-14 02:04:52,355 > variable_setting 함수에 들어왔다.
+[DEBUG|open_api.py:186] 2021-01-14 02:04:52,355 > 계정이 존재하지 않습니다!! library/cf.py 파일에 계좌번호를 입력해주세요!
+[DEBUG|logging_pack.py:45] 2021-01-14 02:06:43,473 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 02:06:43,473 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 02:06:43,474 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 02:06:43,474 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 02:06:43,474 > critical 모드!
+[DEBUG|open_api.py:309] 2021-01-14 02:06:56,515 > connected
+[DEBUG|open_api.py:250] 2021-01-14 02:06:56,515 > account_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:257] 2021-01-14 02:06:56,515 > get_login_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:253] 2021-01-14 02:06:56,517 > 계좌번호 : 8155059611
+[DEBUG|open_api.py:166] 2021-01-14 02:06:56,517 > variable_setting 함수에 들어왔다.
+[DEBUG|open_api.py:180] 2021-01-14 02:06:56,517 > 모의투자 1!!
+[DEBUG|open_api.py:213] 2021-01-14 02:06:56,517 > db name !!! : JackBot1_imi1
+[DEBUG|open_api.py:207] 2021-01-14 02:06:56,537 > JackBot1_imi1 데이터 베이스가 존재하지 않는다! 
+[DEBUG|open_api.py:196] 2021-01-14 02:06:56,537 > create_database!!! JackBot1_imi1
+[DEBUG|open_api.py:1735] 2021-01-14 02:06:56,581 > daily_craw DB가 존재하지 않아 생성 중...
+[DEBUG|open_api.py:1738] 2021-01-14 02:06:56,584 > daily_craw 생성 완료
+[DEBUG|open_api.py:1735] 2021-01-14 02:06:56,584 > daily_buy_list DB가 존재하지 않아 생성 중...
+[DEBUG|open_api.py:1738] 2021-01-14 02:06:56,588 > daily_buy_list 생성 완료
+[DEBUG|open_api.py:1735] 2021-01-14 02:06:56,588 > min_craw DB가 존재하지 않아 생성 중...
+[DEBUG|open_api.py:1738] 2021-01-14 02:06:56,590 > min_craw 생성 완료
+[DEBUG|open_api.py:84] 2021-01-14 02:06:56,655 > self.sf.simul_num(알고리즘 번호) : 1
+[DEBUG|open_api.py:85] 2021-01-14 02:06:56,656 > self.sf.db_to_realtime_daily_buy_list_num : 1
+[DEBUG|open_api.py:86] 2021-01-14 02:06:56,657 > self.sf.sell_list_num : 1
+[DEBUG|open_api.py:416] 2021-01-14 02:06:56,679 > init_db_setting_data !! 
+[DEBUG|open_api.py:116] 2021-01-14 02:06:56,866 > all_item_db 없어서 생성!! init !! 
+[DEBUG|open_api.py:461] 2021-01-14 02:06:56,866 > db_to_all_item 함수에 들어왔다!!!
+[DEBUG|open_api.py:1293] 2021-01-14 02:06:56,963 > delete_all_item!!!!!!!!
+[DEBUG|open_api.py:1301] 2021-01-14 02:06:56,971 > delete_all_item!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[DEBUG|open_api.py:1302] 2021-01-14 02:06:56,971 > 0
+[DEBUG|open_api.py:1468] 2021-01-14 02:06:56,972 > get_d2_deposit 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 02:06:56,973 > 1
+[DEBUG|open_api.py:541] 2021-01-14 02:07:07,657 > check_balance 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 02:07:08,262 > 2
+[DEBUG|logging_pack.py:45] 2021-01-14 02:16:13,882 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 02:16:13,883 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 02:16:13,883 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 02:16:13,883 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 02:16:13,883 > critical 모드!
+[DEBUG|open_api.py:309] 2021-01-14 02:16:28,209 > connected
+[DEBUG|open_api.py:250] 2021-01-14 02:16:28,209 > account_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:257] 2021-01-14 02:16:28,209 > get_login_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:253] 2021-01-14 02:16:28,210 > 계좌번호 : 8155059611
+[DEBUG|open_api.py:166] 2021-01-14 02:16:28,210 > variable_setting 함수에 들어왔다.
+[DEBUG|open_api.py:180] 2021-01-14 02:16:28,210 > 모의투자 1!!
+[DEBUG|open_api.py:213] 2021-01-14 02:16:28,211 > db name !!! : JackBot1_imi1
+[DEBUG|open_api.py:204] 2021-01-14 02:16:28,257 > JackBot1_imi1 데이터 베이스가 존재한다! 
+[DEBUG|open_api.py:84] 2021-01-14 02:16:28,324 > self.sf.simul_num(알고리즘 번호) : 1
+[DEBUG|open_api.py:85] 2021-01-14 02:16:28,324 > self.sf.db_to_realtime_daily_buy_list_num : 1
+[DEBUG|open_api.py:86] 2021-01-14 02:16:28,324 > self.sf.sell_list_num : 1
+[DEBUG|open_api.py:92] 2021-01-14 02:16:28,358 > setting_data db 존재한다!!!
+[DEBUG|open_api.py:1468] 2021-01-14 02:16:28,411 > get_d2_deposit 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 02:16:28,412 > 1
+[DEBUG|open_api.py:541] 2021-01-14 02:16:38,214 > check_balance 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 02:16:38,822 > 2
+[DEBUG|logging_pack.py:45] 2021-01-14 02:38:38,677 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 02:38:38,678 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 02:38:38,678 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 02:38:38,678 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 02:38:38,678 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:05:28,625 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:05:28,625 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:05:28,625 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:05:28,625 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:05:28,626 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:06:07,855 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:06:07,856 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:06:07,856 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:06:07,856 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:06:07,856 > critical 모드!
+[DEBUG|open_api.py:309] 2021-01-14 03:06:25,376 > connected
+[DEBUG|open_api.py:250] 2021-01-14 03:06:25,376 > account_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:257] 2021-01-14 03:06:25,376 > get_login_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:253] 2021-01-14 03:06:25,377 > 계좌번호 : 8155059611
+[DEBUG|open_api.py:166] 2021-01-14 03:06:25,377 > variable_setting 함수에 들어왔다.
+[DEBUG|open_api.py:180] 2021-01-14 03:06:25,377 > 모의투자 1!!
+[DEBUG|open_api.py:213] 2021-01-14 03:06:25,377 > db name !!! : JackBot1_imi1
+[DEBUG|open_api.py:204] 2021-01-14 03:06:25,408 > JackBot1_imi1 데이터 베이스가 존재한다! 
+[DEBUG|open_api.py:84] 2021-01-14 03:06:25,474 > self.sf.simul_num(알고리즘 번호) : 1
+[DEBUG|open_api.py:85] 2021-01-14 03:06:25,474 > self.sf.db_to_realtime_daily_buy_list_num : 1
+[DEBUG|open_api.py:86] 2021-01-14 03:06:25,474 > self.sf.sell_list_num : 1
+[DEBUG|open_api.py:92] 2021-01-14 03:06:25,523 > setting_data db 존재한다!!!
+[DEBUG|open_api.py:1468] 2021-01-14 03:06:25,611 > get_d2_deposit 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 03:06:25,611 > 1
+[DEBUG|open_api.py:541] 2021-01-14 03:07:56,592 > check_balance 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 03:07:57,193 > 2
+[DEBUG|logging_pack.py:45] 2021-01-14 03:12:15,204 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:12:15,205 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:12:15,205 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:12:15,205 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:12:15,205 > critical 모드!
+[DEBUG|open_api.py:309] 2021-01-14 03:12:29,538 > connected
+[DEBUG|open_api.py:250] 2021-01-14 03:12:29,538 > account_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:257] 2021-01-14 03:12:29,539 > get_login_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:253] 2021-01-14 03:12:29,540 > 계좌번호 : 8155059611
+[DEBUG|open_api.py:166] 2021-01-14 03:12:29,540 > variable_setting 함수에 들어왔다.
+[DEBUG|open_api.py:180] 2021-01-14 03:12:29,540 > 모의투자 1!!
+[DEBUG|open_api.py:213] 2021-01-14 03:12:29,540 > db name !!! : JackBot1_imi1
+[DEBUG|open_api.py:204] 2021-01-14 03:12:29,563 > JackBot1_imi1 데이터 베이스가 존재한다! 
+[DEBUG|open_api.py:84] 2021-01-14 03:12:29,617 > self.sf.simul_num(알고리즘 번호) : 1
+[DEBUG|open_api.py:85] 2021-01-14 03:12:29,618 > self.sf.db_to_realtime_daily_buy_list_num : 1
+[DEBUG|open_api.py:86] 2021-01-14 03:12:29,618 > self.sf.sell_list_num : 1
+[DEBUG|open_api.py:92] 2021-01-14 03:12:29,684 > setting_data db 존재한다!!!
+[DEBUG|open_api.py:1468] 2021-01-14 03:12:29,746 > get_d2_deposit 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 03:12:29,747 > 1
+[DEBUG|open_api.py:541] 2021-01-14 03:12:40,350 > check_balance 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 03:12:40,952 > 2
+[DEBUG|logging_pack.py:45] 2021-01-14 03:18:57,379 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:18:57,380 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:18:57,380 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:18:57,380 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:18:57,380 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:19:19,299 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:19:19,300 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:19:19,300 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:19:19,300 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:19:19,301 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:20:09,441 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:20:09,441 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:20:09,441 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:20:09,441 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:20:09,441 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:20:33,755 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:20:33,756 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:20:33,756 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:20:33,756 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:20:33,757 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:22:29,875 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:22:29,875 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:22:29,876 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:22:29,876 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:22:29,876 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:22:48,285 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:22:48,286 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:22:48,286 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:22:48,286 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:22:48,286 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:23:29,236 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:23:29,237 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:23:29,237 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:23:29,237 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:23:29,238 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:24:20,912 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:24:20,912 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:24:20,913 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:24:20,913 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:24:20,913 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:24:33,859 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:24:33,860 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:24:33,860 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:24:33,860 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:24:33,861 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:26:15,031 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:26:15,032 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:26:15,032 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:26:15,032 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:26:15,033 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:27:17,067 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:27:17,068 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:27:17,068 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:27:17,068 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:27:17,068 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:32:33,196 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:32:33,197 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:32:33,197 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:32:33,197 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:32:33,197 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:32:58,225 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:32:58,226 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:32:58,226 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:32:58,226 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:32:58,226 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:33:55,648 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:33:55,649 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:33:55,649 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:33:55,649 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:33:55,650 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:34:15,023 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:34:15,024 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:34:15,024 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:34:15,024 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:34:15,024 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:35:24,426 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:35:24,427 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:35:24,427 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:35:24,427 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:35:24,427 > critical 모드!
+[DEBUG|logging_pack.py:45] 2021-01-14 03:35:46,014 > debug 모드!
+[INFO|logging_pack.py:46] 2021-01-14 03:35:46,015 > info 모드!
+[WARNING|logging_pack.py:47] 2021-01-14 03:35:46,015 > warning 모드!
+[ERROR|logging_pack.py:48] 2021-01-14 03:35:46,015 > error 모드!
+[CRITICAL|logging_pack.py:49] 2021-01-14 03:35:46,015 > critical 모드!
+[DEBUG|open_api.py:309] 2021-01-14 03:35:54,848 > connected
+[DEBUG|open_api.py:250] 2021-01-14 03:35:54,848 > account_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:257] 2021-01-14 03:35:54,848 > get_login_info 함수에 들어왔습니다!
+[DEBUG|open_api.py:253] 2021-01-14 03:35:54,849 > 계좌번호 : 8155059611
+[DEBUG|open_api.py:166] 2021-01-14 03:35:54,849 > variable_setting 함수에 들어왔다.
+[DEBUG|open_api.py:180] 2021-01-14 03:35:54,849 > 모의투자 1!!
+[DEBUG|open_api.py:213] 2021-01-14 03:35:54,849 > db name !!! : JackBot1_imi1
+[DEBUG|open_api.py:204] 2021-01-14 03:35:54,866 > JackBot1_imi1 데이터 베이스가 존재한다! 
+[DEBUG|open_api.py:84] 2021-01-14 03:35:54,898 > self.sf.simul_num(알고리즘 번호) : 1
+[DEBUG|open_api.py:85] 2021-01-14 03:35:54,899 > self.sf.db_to_realtime_daily_buy_list_num : 1
+[DEBUG|open_api.py:86] 2021-01-14 03:35:54,899 > self.sf.sell_list_num : 1
+[DEBUG|open_api.py:92] 2021-01-14 03:35:54,940 > setting_data db 존재한다!!!
+[DEBUG|open_api.py:1468] 2021-01-14 03:35:54,999 > get_d2_deposit 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 03:35:55,000 > 1
+[DEBUG|open_api.py:541] 2021-01-14 03:36:09,747 > check_balance 함수에 들어왔습니다!
+[DEBUG|open_api.py:1134] 2021-01-14 03:36:10,347 > 2
