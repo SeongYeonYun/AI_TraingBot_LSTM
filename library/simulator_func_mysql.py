@@ -115,7 +115,7 @@ class simulator_func_mysql:
 
             ######### 알고리즘 선택 #############
             # 매수 리스트 설정 알고리즘 번호
-            self.db_to_realtime_daily_buy_list_num = 1
+            self.db_to_realtime_daily_buy_list_num = 6
 
             # 매도 리스트 설정 알고리즘 번호
             self.sell_list_num = 1
@@ -215,51 +215,51 @@ class simulator_func_mysql:
             logger.error(f"입력 하신 {self.simul_num}번 알고리즘에 대한 설정이 없습니다. simulator_func_mysql.py 파일의 variable_setting함수에 알고리즘을 설정해주세요. ")
             sys.exit(1)
 
-#         if self.simul_num in (1, 4, 5):
-#             # 시뮬레이팅 시작 일자
-#             self.simul_start_date = "20190101"
-#
-#             ######### 알고리즘 선택 #############
-#             # 매수 리스트 설정 알고리즘 번호
-#             self.db_to_realtime_daily_buy_list_num = 1
-#
-#             # 매도 리스트 설정 알고리즘 번호
-#             self.sell_list_num = 1
-#             ###################################
-#             self.interval_month = 3
-#             # 초기 투자자금
-#             self.start_invest_price = 10000000
-#
-#             # 매수 금액
-#             self.invest_unit = 1000000
-#
-#             # 자산 중 최소로 남겨 둘 금액
-#             self.limit_money = 3000000
-#
-#             # 익절 수익률 기준치
-#             self.sell_point = 10
-#
-#             # 손절 수익률 기준치
-#             self.losscut_point = -2
-#
-#             # 실전/모의 봇 돌릴 때 매수하는 순간 종목의 최신 종가 보다 1% 이상 오른 경우 사지 않도록 하는 설정(변경 가능)
-#             self.invest_limit_rate = 1.01
-#             # 실전/모의 봇 돌릴 때 매수하는 순간 종목의 최신 종가 보다 -2% 이하로 떨어진 경우 사지 않도록 하는 설정(변경 가능)
-#             self.invest_min_limit_rate = 0.98
-#
-#             if self.simul_num == 4:
-#                 self.db_to_realtime_daily_buy_list_num = 4
-#                 self.interval_month = 3
-#                 self.invest_unit = 50000
-#
-#             elif self.simul_num == 5:
-#                 self.db_to_realtime_daily_buy_list_num = 5
-#                 self.total_transaction_price = 10000000000
-#                 self.interval_month = 3
-#                 self.vol_mul = 3
-#                 self.d1_diff = 2
-#                 # self.use_min= True
-#                 # self.only_nine_buy = False
+        if self.simul_num in (1, 4, 5):
+            # 시뮬레이팅 시작 일자
+            self.simul_start_date = "20190101"
+
+            ######### 알고리즘 선택 #############
+            # 매수 리스트 설정 알고리즘 번호
+            self.db_to_realtime_daily_buy_list_num = 1
+
+            # 매도 리스트 설정 알고리즘 번호
+            self.sell_list_num = 1
+            ###################################
+            self.interval_month = 3
+            # 초기 투자자금
+            self.start_invest_price = 10000000
+
+            # 매수 금액
+            self.invest_unit = 1000000
+
+            # 자산 중 최소로 남겨 둘 금액
+            self.limit_money = 3000000
+
+            # 익절 수익률 기준치
+            self.sell_point = 10
+
+            # 손절 수익률 기준치
+            self.losscut_point = -2
+
+            # 실전/모의 봇 돌릴 때 매수하는 순간 종목의 최신 종가 보다 1% 이상 오른 경우 사지 않도록 하는 설정(변경 가능)
+            self.invest_limit_rate = 1.01
+            # 실전/모의 봇 돌릴 때 매수하는 순간 종목의 최신 종가 보다 -2% 이하로 떨어진 경우 사지 않도록 하는 설정(변경 가능)
+            self.invest_min_limit_rate = 0.98
+
+            if self.simul_num == 4:
+                self.db_to_realtime_daily_buy_list_num = 4
+                self.interval_month = 3
+                self.invest_unit = 50000
+
+            elif self.simul_num == 5:
+                self.db_to_realtime_daily_buy_list_num = 5
+                self.total_transaction_price = 10000000000
+                self.interval_month = 3
+                self.vol_mul = 3
+                self.d1_diff = 2
+                # self.use_min= True
+                # self.only_nine_buy = False
 
         #########################################################################################################################
         self.db_name_setting()
