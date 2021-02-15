@@ -20,7 +20,7 @@ conn = pymysql.connect(host=cf.db_ip,
 
 FEATURE_COLUMNS = ["close", "volume", "open", "high", "low"]
 code_name = '삼성전자'
-until = '20200712'
+until = '20210216'
 sql = """
     SELECT {} FROM `{}`
     WHERE STR_TO_DATE(date, '%Y%m%d%H%i') <= '{}'

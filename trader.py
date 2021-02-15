@@ -3,7 +3,8 @@ print(f"trader Version: {ver}")
 
 from library.open_api import *
 from PyQt5.QtWidgets import *
-
+from slacker import Slacker
+slack = Slacker('xoxb-1694440446322-1694442730642-rqX0cmQZCJkY06P3CVwnxW5W')
 logger.debug("trader start !!!!!!")
 
 
@@ -87,6 +88,8 @@ class Trader(QMainWindow):
             logger.debug("매도할 종목코드: !!" + str(get_sell_code))
             logger.debug("매도 수익률: !!" + str(get_sell_rate))
             logger.debug("매도 수량: !!" + str(get_sell_num))
+            slack.chat.post_message('#stock', "매도할 종목코드: " + str(get_sell_code) + "\n매도 수익률: " + str(get_sell_rate)+
+                                    "\n매도 수량: " + str(get_sell_num) )
 
             if get_sell_code != False and get_sell_code != "0" and get_sell_code != 0:
                 if get_sell_rate < 0:

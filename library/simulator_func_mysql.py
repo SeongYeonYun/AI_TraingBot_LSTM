@@ -95,7 +95,7 @@ class simulator_func_mysql:
         self.buy_stop = False
 
         # AI알고리즘 사용 여부 (고급 챕터에서 소개)
-        self.use_ai = False  # ai 알고리즘 사용 시 True 사용 안하면 False
+        self.use_ai = True  # ai 알고리즘 사용 시 True 사용 안하면 False
         self.ai_filter_num = 1  # ai 알고리즘 선택
 
         # 실시간 조건 매수 옵션 (고급 챕터에서 소개)
@@ -121,6 +121,8 @@ class simulator_func_mysql:
             self.sell_list_num = 1
             ###################################
 
+            self.use_ai = True  # ai 알고리즘 사용 시 True 사용 안하면 False
+            self.ai_filter_num = 1  # ai 알고리즘 선택
             # 초기 투자자금(시뮬레이션에서의 초기 투자 금액. 모의투자는 신청 당시의 금액이 초기 투자 금액이라고 보시면 됩니다)
             # 주의! start_invest_price 는 모의투자 초기 자본금과 별개. 시뮬레이션에서만 적용.
             # 키움증권 모의투자의 경우 초기에 모의투자 신청 할 때 설정 한 금액으로 자본금이 설정됨
@@ -249,7 +251,6 @@ class simulator_func_mysql:
 
             if self.simul_num == 4:
                 self.db_to_realtime_daily_buy_list_num = 4
-                self.interval_month = 3
                 self.invest_unit = 50000
 
             elif self.simul_num == 5:
@@ -615,7 +616,7 @@ class simulator_func_mysql:
 
             sql = "select * from `" + date_rows_yesterday + "` a where yes_clo20 > yes_clo5 and clo5 > clo20 " \
                                                             "and NOT exists (select null from stock_konex b where a.code=b.code) " \
-                                                            "and close < '%s' group by code"
+                                                            "and close < '%s' group by code limit10"
 
             realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.invest_unit)).fetchall()
 
@@ -628,39 +629,37 @@ class simulator_func_mysql:
             realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.invest_unit)).fetchall()
 
 
-        # elif self.db_to_realtime_daily_buy_list_num == 3:
-        #   sql = "select * from `" + date_rows_yesterday + "` a where d1_diff_rate > 1 " \
-        #                                                   "and NOT exists (select null from stock_konex b where a.code=b.code) " \
-        #                                                   "and close < '%s' group by code"
-        #
-        #   # 아래 명령을 통해 테이블로 부터 데이터를 가져오면 리스트 형태로 realtime_daily_buy_list 에 담긴다.
-        #   realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.invest_unit)).fetchall()
+        elif self.db_to_realtime_daily_buy_list_num == 3:
+          sql = "select * from `" + date_rows_yesterday + "` a where d1_diff_rate > 1 " \
+                                                          "and NOT exists (select null from stock_konex b where a.code=b.code) " \
+                                                          "and close < '%s' group by code"
+
+          # 아래 명령을 통해 테이블로 부터 데이터를 가져오면 리스트 형태로 realtime_daily_buy_list 에 담긴다.
+          realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.invest_unit)).fetchall()
 
 
-        # elif self.db_to_realtime_daily_buy_list_num == 4:
-        #     sql = "select * from `" + date_rows_yesterday + "` a where where yes_clo20 > yes_clo5 and clo5 > clo20 " \
-        #                                                     "and NOT exists (select null from stock_konex b where a.code=b.code) " \
-        #                                                     "and close < '%s' group by code"
-        #
-        #     # 아래 명령을 통해 테이블로 부터 데이터를 가져오면 리스트 형태로 realtime_daily_buy_list 에 담긴다.
-        #     realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.invest_unit)).fetchall()
+        elif self.db_to_realtime_daily_buy_list_num == 4:
+            sql = "select * from `" + date_rows_yesterday + "` a where where yes_clo20 > yes_clo5 and clo5 > clo20 " \
+                                                            "and NOT exists (select null from stock_konex b where a.code=b.code) " \
+                                                            "and close < '%s' group by code"
 
-        # 매수함수
-        #         elif self.db_to_realtime_daily_buy_list_num == 5:
-        #             sql = "select * from `" + date_rows_yesterday + "` a " \
-        #                     "where yes_clo20 > yes_clo5 and clo5 > clo20 " \
-        #                     "and volume * close > '%s' " \
-        #                     "and vol20 * '%s' < volume " \
-        #                     "and d1_diff_rate > '%s' " \
-        #                     "and NOT exists (select null from stock_konex b where a.code=b.code) " \
-        #                     "and NOT exists (select null from stock_managing c where a.code=c.code and c.code_name != '' group by c.code) " \
-        #                     "and NOT exists (select null from stock_insincerity d where a.code=d.code and d.code_name !='' group by d.code) " \
-        #                     "and NOT exists (select null from stock_invest_caution e where a.code=e.code and DATE_SUB('%s', INTERVAL '%s' MONTH ) < e.post_date and e.post_date < Date('%s') and e.type != '투자경고 지정해제' group by e.code)"\
-        #                     "and NOT exists (select null from stock_invest_warning f where a.code=f.code and f.post_date <= DATE('%s') and (f.cleared_date > DATE('%s') or f.cleared_date is null) group by f.code)"\
-        #                     "and NOT exists (select null from stock_invest_danger g where a.code=g.code and g.post_date <= DATE('%s') and (g.cleared_date > DATE('%s') or g.cleared_date is null) group by g.code)"\
-        #                     "and a.close < '%s'" \
-        #                     "order by volume * close desc"
-        #             realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.total_transaction_price,self.vol_mul, self.d1_diff , date_rows_yesterday, self.interval_month, date_rows_yesterday,date_rows_yesterday ,date_rows_yesterday,date_rows_yesterday,date_rows_yesterday, self.invest_unit)).fetchall()
+            # 아래 명령을 통해 테이블로 부터 데이터를 가져오면 리스트 형태로 realtime_daily_buy_list 에 담긴다.
+            realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.invest_unit)).fetchall()
+
+        elif self.db_to_realtime_daily_buy_list_num == 5:
+            sql = "select * from `" + date_rows_yesterday + "` a " \
+                            "where yes_clo20 > yes_clo5 and clo5 > clo20 " \
+                            "and volume * close > '%s' " \
+                            "and vol20 * '%s' < volume " \
+                            "and d1_diff_rate > '%s' " \
+                            "and NOT exists (select null from stock_konex b where a.code=b.code) " \
+                            "and NOT exists (select null from stock_managing c where a.code=c.code and c.code_name != '' group by c.code) " \
+                            "and NOT exists (select null from stock_insincerity d where a.code=d.code and d.code_name !='' group by d.code) " \
+                            "and NOT exists (select null from stock_invest_caution e where a.code=e.code and DATE_SUB('%s', INTERVAL '%s' MONTH ) < e.post_date and e.post_date < Date('%s') and e.type != '투자경고 지정해제' group by e.code)"\
+                            "and NOT exists (select null from stock_invest_warning f where a.code=f.code and f.post_date <= DATE('%s') and (f.cleared_date > DATE('%s') or f.cleared_date is null) group by f.code)"\
+                            "and a.close < '%s'" \
+                            "order by volume * close desc"
+            realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.total_transaction_price,self.vol_mul, self.d1_diff , date_rows_yesterday, self.interval_month, date_rows_yesterday,date_rows_yesterday ,date_rows_yesterday,date_rows_yesterday,date_rows_yesterday, self.invest_unit)).fetchall()
 
 
 
