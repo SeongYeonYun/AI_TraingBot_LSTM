@@ -28,7 +28,7 @@ class Trader(QMainWindow):
         # 장마감 시간 설정
         self.market_end_time = QTime(15, 30, 0)
         # 매수를 몇 시 까지 할지 설정. (시, 분, 초)
-        self.buy_end_time = QTime(9, 10, 0)
+        self.buy_end_time = QTime(15, 00, 0)
 
         ############################################
 
