@@ -138,7 +138,7 @@ for i in CODE_NAME:
     #time_steps : 한 묶음에 몇 개의 데이터가 있는지
     # features : 속성(컬럼)의 수 (차원)
     # data_size 는 생략해도 input_shape에서 자동으로 계산해줌
-    model.add(LSTM(units=32 ,input_shape=X_train.shape[1:]))
+    model.add(LSTM(units=32 , input_shape=X_train.shape[1:]))
     # Dense : 출력층 값이 1개가 나온다. 우리가 예측한 주가, 이것을 통해서 오차를 구하고 학습을 해서 모델을 만드는 것
     model.add(Dense(units=1))
 

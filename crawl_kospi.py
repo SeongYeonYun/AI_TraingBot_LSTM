@@ -1,61 +1,79 @@
+from library import cf
+import pymysql
+from sqlalchemy import create_engine
+pymysql.install_as_MySQLdb()
+import MySQLdb
 import urllib.request
 from bs4 import BeautifulSoup
-from library import cf
 import json
 from urllib import parse
 from collections import OrderedDict
 import pandas_datareader as data
 import pandas as pd
 from datetime import datetime
-import pymysql
-
-#실시간 지수 데이터 받아오기
-basic_url = "https://finance.naver.com/sise/"
-
-fp = urllib.request.urlopen(basic_url)
-
-source = fp.read()
-
-fp.close()
-
-soup = BeautifulSoup(source, 'html.parser')
-soup = soup.findAll("span",class_="num")
+import time
 
 
-kospi_value = soup[0].string
-kosdaq_value = soup[1].string
+#날자 데이터 전처리, timestamp  => str
+def trans_string(t):
+    Date = []
+    for x in t:
+        x = str(x)
+        x = x.replace(" ", "")
+        x = x.replace("00:00:00", "")
+        x = x.replace("-", "")
+        Date.append(x)
+    return Date
 
-print(kospi_value)
-print(kosdaq_value)
+#당일 날자 조회
+d = datetime.today()
 
-
-
-
-# conn = pymysql.connect(host='localhost', user='root', password=cf.db_passwd, charset='utf8')
-# cursor = conn.cursor()
-# sql = "CREATE DATABASE KOSDAQ"
-#
-# cursor.execute(sql)
-#
-# conn.commit()
-# conn.close()
-
-
+start_date = datetime(d.year,d.month,d.day)
+end_date = datetime(d.year,d.month,d.day)
 
 # 두 가지의 방식
 # ^KS11(코스피) , KQ11(코스닥)
 
-#맨 처음에만 시도, 지수 데이터를 sql에 저장하는데 사용
-kosp = data.get_data_yahoo("^KS11")
-kosp = kosp.reset_index()
+##########################################코스피######################################
+#처음 데이터를 받아올떄만 사용
+# kosp = data.get_data_yahoo("^KS11")
+# kosp = kosp.reset_index()
+# Date = trans_string(kosp["Date"])
+# kosp["Date"] = Date
+# engine = create_engine("mysql+mysqldb://root:"+cf.db_passwd+"@localhost/kospi", encoding='utf-8')
+# conn = engine.connect()
+#
+# kosp.to_sql(name='crawl_kospi', con=conn, if_exists='append',index=False)
 
 
-kosq = data.get_data_yahoo("^KQ11")
-kosq = kosq.reset_index()
-
-
-#일별 db업데이트
-start_date = datetime(2021,2,19)
-end_date = datetime(2021,2,19)
-
+#코스피 일별 db업데이트
 df = data.get_data_yahoo("^KS11", start_date, end_date)
+kospi_df = df.reset_index()
+
+engine = create_engine("mysql+mysqldb://root:"+cf.db_passwd+"@localhost/kospi", encoding='utf-8')
+conn = engine.connect()
+
+kospi_df.to_sql(name='crawl_kospi', con=conn, if_exists='append',index=False)
+
+
+##################################코스닥##################################
+# kosq = data.get_data_yahoo("^KQ11")
+# kosq = kosq.reset_index()
+#
+# Date = trans_string(kosq["Date"])
+# kosq["Date"] = Date
+#
+# engine = create_engine("mysql+mysqldb://root:"+cf.db_passwd+"@localhost/kosdaq", encoding='utf-8')
+# conn = engine.connect()
+#
+# kosp.to_sql(name='crawl_kosdaq', con=conn, if_exists='append',index=False)
+
+
+#코스닥 일별 db업데이트
+df = data.get_data_yahoo("^KQ11", start_date, end_date)
+kosdaq_df = df.reset_index()
+
+engine = create_engine("mysql+mysqldb://root:"+cf.db_passwd+"@localhost/kosdaq", encoding='utf-8')
+conn = engine.connect()
+
+kospi_df.to_sql(name='crawl_kosdaq', con=conn, if_exists='append',index=False)

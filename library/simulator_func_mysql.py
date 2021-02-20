@@ -102,7 +102,7 @@ class simulator_func_mysql:
         # self.only_nine_buy 옵션을 반드시 False로 설정해야함
         # self.use_min 옵션이 반드시 True로 설정이 되어야함
         # 실시간 조건 매수 알고리즘 선택 (1,2,3..)
-        self.trade_check_num = False
+        # self.trade_check_num = False
         self.simul_num = 12
         print("self.simul_num!!! ", self.simul_num)
 
@@ -113,7 +113,7 @@ class simulator_func_mysql:
             # 시뮬레이팅 시작 일자(분 별 시뮬레이션의 경우 최근 1년 치 데이터만 있기 때문에 start_date 조정 필요)
             self.simul_start_date = "20190101"
             self.use_ai = True  # ai 알고리즘 사용 시 True 사용 안하면 False
-            self.ai_filter_num = 1  # ai 알고리즘 선택
+            self.ai_filter_num = 2  # ai 알고리즘 선택
             ######### 알고리즘 선택 #############
             # 매수 리스트 설정 알고리즘 번호
             self.db_to_realtime_daily_buy_list_num = 1
@@ -155,8 +155,8 @@ class simulator_func_mysql:
                 self.interval_month = 3
                 self.vol_mul = 3
                 self.d1_diff = 2
-                # self.use_min= True
-                # self.only_nine_buy = False
+                self.use_min= True
+                self.only_nine_buy = False
 
             elif self.simul_num == 6:
                 self.db_to_realtime_daily_buy_list_num = 6
@@ -684,7 +684,7 @@ class simulator_func_mysql:
                             "and NOT exists (select null from stock_invest_warning f where a.code=f.code and f.post_date <= DATE('%s') and (f.cleared_date > DATE('%s') or f.cleared_date is null) group by f.code)"\
                             "and NOT exists (select null from stock_invest_danger g where a.code=g.code and g.post_date <= DATE('%s') and (g.cleared_date > DATE('%s') or g.cleared_date is null) group by g.code)"\
                             "and a.close < '%s'" \
-                            "order by volume * close desc"
+                            "order by volume * close desc limit 10"
 
             realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.total_transaction_price,self.vol_mul, self.d1_diff , date_rows_yesterday, self.interval_month, date_rows_yesterday,date_rows_yesterday ,date_rows_yesterday,date_rows_yesterday,date_rows_yesterday, self.invest_unit)).fetchall()
 
@@ -700,7 +700,8 @@ class simulator_func_mysql:
                             "and NOT exists (select null from stock_invest_caution e where a.code=e.code and DATE_SUB('%s', INTERVAL '%s' MONTH ) < e.post_date and e.post_date < Date('%s') and e.type != '투자경고 지정해제' group by e.code)"\
                             "and NOT exists (select null from stock_invest_warning f where a.code=f.code and f.post_date <= DATE('%s') and (f.cleared_date > DATE('%s') or f.cleared_date is null) group by f.code)"\
                             "and a.close < '%s'" \
-                            "order by volume * close desc"
+                            "order by volume * close desc limit 10"
+
             realtime_daily_buy_list = self.engine_daily_buy_list.execute(sql % (self.total_transaction_price,self.vol_mul, self.d1_diff , date_rows_yesterday, self.interval_month, date_rows_yesterday,date_rows_yesterday ,date_rows_yesterday,date_rows_yesterday,date_rows_yesterday, self.invest_unit)).fetchall()
 
 
