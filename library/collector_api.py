@@ -1,10 +1,11 @@
 from collections import OrderedDict
 
-from sqlalchemy import Integer, Text
+from sqlalchemy import Integer, Text, Float, String
 
-ver = "#version 1.3.15"
+ver = "#version 1.4.1"
 print(f"collector_api Version: {ver}")
 
+import datetime
 import numpy
 import pathlib
 from library.open_api import *
@@ -45,7 +46,10 @@ class collector_api():
         # 관리종목(stock_managing), 불성실법인종목(stock_insincerity) 업데이트
         if rows[0][0] != self.open_api.today:
             self.get_code_list()  # 촬영 후 일부 업데이트 되었습니다.
-
+            self._create_stock_info()
+            check_sql = f"UPDATE setting_data SET code_update='{self.open_api.today}' limit 1"
+            self.engine_JB.execute(check_sql)
+            
         # 촬영 후 콜렉팅 순서가 일부 업데이트 되었습니다.
         # 잔고 및 보유종목 현황 db setting  & 당일 종목별 실현 손익
         if rows[0][1] != self.open_api.today or rows[0][2] != self.open_api.today:
@@ -74,6 +78,7 @@ class collector_api():
             # 매도 했는데 bot이 꺼져있을때 매도해서 all_item_db에 sell_date에 오늘 일자가 안 찍힌 종목들에 date 값을 넣어 준다. (이때 sell_rate는 0.0으로 찍힌다.)
             self.open_api.final_chegyul_check()
 
+        self._create_stock_finance()
         # 내일 매수 종목 업데이트 (realtime_daily_buy_list)
         if rows[0][6] != self.open_api.today:
             self.realtime_daily_buy_list_check()
@@ -81,7 +86,6 @@ class collector_api():
         # min_craw db (분별 데이터) 업데이트
         if rows[0][8] != self.open_api.today:
             self.min_crawler_check()
-
         self.kind.craw()
 
         logger.debug("collecting 작업을 모두 정상적으로 마쳤습니다.")
@@ -97,13 +101,14 @@ class collector_api():
     # 실전 봇, 모의 봇 매수 종목 세팅 + all_item_db 업데이트 함수
     def realtime_daily_buy_list_check(self):
         if self.open_api.sf.is_date_exist(self.open_api.today):
-            logger.debug("daily_buy_list DB에 {} 테이블이 있습니다. jackbot DB에 realtime_daily_buy_list 테이블을 생성합니다".format(self.open_api.today))
+            logger.debug("daily_buy_list DB에 {} 테이블이 있습니다. jackbot DB에 realtime_daily_buy_list 테이블을 생성합니다".format(
+                self.open_api.today))
 
             self.open_api.sf.get_date_for_simul()
             # 첫 번째 파라미터는 여기서는 의미가 없다.
             # 두 번째 파라미터에 오늘 일자를 넣는 이유는 매수를 하는 시점인 내일 기준으로 date_rows_yesterday가 오늘 이기 때문
-            self.open_api.sf.db_to_realtime_daily_buy_list(self.open_api.today, self.open_api.today, len(self.open_api.sf.date_rows))
-
+            self.open_api.sf.db_to_realtime_daily_buy_list(self.open_api.today, self.open_api.today,
+                                                           len(self.open_api.sf.date_rows))
 
             # all_item_db에서 open, clo5~120, volume 등을 오늘 일자 데이터로 업데이트 한다.
             self.open_api.sf.update_all_db_by_date(self.open_api.today)
@@ -277,32 +282,13 @@ class collector_api():
         ).drop_duplicates(subset=['code', 'code_name'])
         self._stock_to_sql(stock_item_all_df, "item_all")
 
-        ### stock_item_all이 제대로 생성되는지 확인하는 코드
-        # union_frags = []
-        # alias_num = 0
-        # for _type, data in stock_data.items():
-        #     if _type not in excluded_tables:
-        #         union_frags.append(f"SELECT a{alias_num}.code_name FROM daily_buy_list.stock_{_type} a{alias_num}")
-        #         alias_num += 1
-        # union_query = '\nUNION ALL\n'.join(union_frags)
-        # testing_query = f"SELECT count(code_name) FROM ({union_query}) b " \
-        #                 f"WHERE code_name != '' or code_name != null"
-        #
-        # stock_union_count = self.engine_JB.execute(testing_query).fetchall()
-        # sia_count = self.engine_JB.execute(f"SELECT count(*) FROM daily_buy_list.stock_item_all").fetchall()
-        #
-        # assert sia_count == stock_union_count, "stock_item_all does not contain all data."
-        ###
-
-        sql = "UPDATE setting_data SET code_update='%s' limit 1"
-        self.engine_JB.execute(sql % (self.open_api.today))
-
     def _get_code_list_by_market(self, market_num):
         codes = self.open_api.dynamicCall(f'GetCodeListByMarket("{market_num}")')
         return codes.split(';')
 
     # 틱(1분 별) 데이터를 가져오는 함수
     def set_min_crawler_table(self, code, code_name):
+        is_new = True
         df = self.open_api.get_total_data_min(code, code_name, self.open_api.today)
         if len(df) == 0:
             return 1
@@ -374,6 +360,7 @@ class collector_api():
 
         if self.open_api.craw_table_exist:
             df_temp = df_temp[df_temp.date > self.open_api.craw_db_last_min]
+            is_new = False
 
         if len(df_temp) == 0:
             logger.debug("이미 min_craw db의 " + code_name + " 테이블에 콜렉팅 완료 했다! df_temp가 비었다!!")
@@ -414,6 +401,16 @@ class collector_api():
                 logger.critical(e)
 
         df_temp.to_sql(name=code_name, con=self.open_api.engine_craw, if_exists='append')
+        if is_new:
+            index_name = ''.join(c for c in code_name if c.isalnum())
+            try:
+                self.open_api.engine_craw.execute(f"""
+                    CREATE INDEX ix_{index_name}_date
+                    ON min_craw.`{code_name}` (date(12)) 
+                """)
+            except Exception:
+                pass
+
         # 콜렉팅하다가 max_api_call 횟수까지 가게 된 경우는 다시 콜렉팅 못한 정보를 가져와야 하니까 check_item_gubun=0
         if self.open_api.rq_count == cf.max_api_call - 1:
             check_item_gubun = 0
@@ -427,7 +424,7 @@ class collector_api():
             return 1
         oldest_row = df.iloc[-1]
         check_row = None
-
+        deleted = False
         check_daily_crawler_sql = """
             UPDATE  daily_buy_list.stock_item_all SET check_daily_crawler = '4' WHERE code = '{}'
         """
@@ -438,6 +435,7 @@ class collector_api():
             """).fetchall()
         else:
             self.engine_JB.execute(check_daily_crawler_sql.format(code))
+            deleted = True
 
         if check_row and check_row[0]['close'] != oldest_row['close']:
             logger.info(f'{code} {code_name}의 액면분할/증자 등의 이유로 수정주가가 달라져서 처음부터 다시 콜렉팅')
@@ -453,6 +451,7 @@ class collector_api():
             logger.info('삭제 완료')
             df = self.open_api.get_total_data(code, code_name, self.open_api.today)
             self.engine_JB.execute(check_daily_crawler_sql.format(code))
+            deleted = True
 
         check_daily_crawler = self.engine_JB.execute(f"""
             SELECT check_daily_crawler FROM daily_buy_list.stock_item_all WHERE code = '{code}'
@@ -549,6 +548,15 @@ class collector_api():
                  'vol5', 'vol10', 'vol20', 'vol40', 'vol60', 'vol80', 'vol100', 'vol120']].fillna(0).astype(int)
 
         df_temp.to_sql(name=code_name, con=self.open_api.engine_daily_craw, if_exists='append')
+        index_name = ''.join(c for c in code_name if c.isalnum())
+        if deleted:
+            try:
+                self.open_api.engine_daily_craw.execute(f"""
+                    CREATE INDEX ix_{index_name}_date
+                    ON daily_craw.`{code_name}` (date(8)) 
+                """)
+            except Exception:
+                pass
 
         # check_daily_crawler 가 4 인 경우는 액면분할, 증자 등으로 인해 daily_buy_list 업데이트를 해야하는 경우
         if check_daily_crawler == '4':
@@ -562,13 +570,21 @@ class collector_api():
             for row in dbl_dates:
                 logger.info(f'{code} {code_name} - daily_buy_list.`{row.tname}` 업데이트')
                 try:
-                    new_data = df_temp[df_temp['date'] == row.tname]
-                except IndexError:
+                    new_data = df_temp.loc[row.tname]
+                except KeyError:
                     continue
                 self.open_api.engine_daily_buy_list.execute(f"""
                     DELETE FROM `{row.tname}` WHERE code = {code}
                 """)
-                new_data.to_sql(name=row.tname, con=self.open_api.engine_daily_buy_list, if_exists='append')
+                if not new_data.empty:
+                    new_data.set_index('code')
+                    new_data.to_sql(
+                        name=row.tname,
+                        con=self.open_api.engine_daily_buy_list,
+                        index=True,
+                        if_exists='append',
+                        dtype={'code': String(6)}
+                    )
 
             logger.info('daily_buy_list 업데이트 완료')
 
@@ -939,4 +955,167 @@ class collector_api():
 
 
 
+    # stock_info 테이블을 만드는 함수
+    def _create_stock_info(self):
+        # stock_item_all 에 있는 종목 코드를 가져온다
+        stock_codes = self.open_api.engine_daily_buy_list.execute("""
+               SELECT code FROM stock_item_all
+           """).fetchall()
+        stock_info_data = defaultdict(list)
 
+        for row in stock_codes:
+            stock_info_data['code'].append(row['code'])
+
+        # ex3 에서 사용
+        thema_dict = self.open_api.get_theme_info()
+
+        # ex4 에서 사용
+        data_map = {
+            '시장구분0': [stock_info_data['stock_market'], stock_info_data['category0']],
+            '업종구분': [stock_info_data['market_class0'], stock_info_data['market_class1']],
+            '시장구분1': [stock_info_data['category1']]
+        }
+
+        for c in stock_info_data['code']:
+            # ex1. 감리 구분 컬럼 추가
+            stock_info_data['audit'].append(self.open_api.dynamicCall('GetMasterConstruction(QString)', c))
+
+            # ex2. 증거금 비율(margin), 비고(remarks, 거래정지여부, 관리종목여부 등) 컬럼 추가
+            stock_state = self.open_api.dynamicCall('GetMasterStockState(QString)', c).split('|')
+            stock_info_data['margin'].append(stock_state[0][3:-1])
+            stock_info_data['remarks'].append('|'.join(stock_state[1:]))
+
+            # ex3. 종목별 테마코드, 테마명 컬럼 추가
+            if c not in thema_dict and not thema_dict[c]: #
+                stock_info_data['thema_code'].append(None)
+                stock_info_data['thema_name'].append(None)
+            else:
+                theme_codes = []
+                theme_names = []
+                for theme_code, theme_name in thema_dict[c]:
+                    theme_codes.append(theme_code)
+                    theme_names.append(theme_name)
+                stock_info_data['thema_code'].append('|'.join(theme_codes))
+                stock_info_data['thema_name'].append('|'.join(theme_names))
+
+            # ex4. 주식종목 시장구분, 종목분류 등 컬럼 추가
+            stock_info = {}
+            for info in self.open_api.KOA_Functions('GetMasterStockInfo', c).split(';'):
+                if info:
+                    split_info = info.split('|')
+                    k = split_info[0]
+                    v = split_info[1:]
+                    stock_info[k] = v
+
+            for k, v in data_map.items():
+                if k in stock_info:
+                    for i, mapped_list in enumerate(v):
+                        try:
+                            mapped_list.append(stock_info[k][i] or None)
+                        except IndexError:
+                            mapped_list.append(None)
+                else:
+                    for mapped_list in v:
+                        mapped_list.append(None)
+
+        # dictionary 를 dataframe으로 변환하여 to_sql로 stock_info 테이블 생성
+        DataFrame.from_dict(stock_info_data).to_sql(
+            'stock_info', self.open_api.engine_daily_buy_list,
+            index=False,
+            dtype={
+                'margin': Integer
+            },
+            if_exists='replace'
+        )
+
+    # stock_finance 테이블을 만드는 함수
+    def _create_stock_finance(self):
+        table_name = 'stock_finance'
+
+        # stock_item_all 에 저장된 모든 종목의 code를 가져온다.
+        stock_codes = self.open_api.engine_daily_buy_list.execute("""
+            SELECT code FROM stock_item_all
+        """).fetchall()
+
+        # stock_codes 에 있는 종목코드를 stock_codes_list에 넣는다.
+        stock_codes_list = []
+        for row in stock_codes:
+            stock_codes_list.append(row['code'])
+
+        # 위 3줄을 한 줄로 표현 하면 아래와 같이 대체 가능(list comprehension)
+        # stock_codes_list = [row['code'] for row in stock_codes]
+
+        # 키움 API에서 전달 받은 한글 key값을 영어로 바꿔서 테이블 칼럼명으로 설정 하기 위함
+        column_names = {
+            '종목코드': 'code', '결산월': 'settlement_month', '액면가': 'par_value', '자본금': 'capital_stock',
+            '상장주식': 'listed_stock', '신용비율': 'credit_rate', '연중최고': 'year_highest', '연중최저': 'year_lowest',
+            '시가총액': 'market_cap', '외인소진률': 'foreign_rate', '대용가': 'sub_price',
+            '매출액': 'gross_profit', '영업이익': 'operation_income', '당기순이익': 'net_income', '250최고': '250highest',
+            '250최저': '250lowest', '상한가': 'upper_limit', '하한가': 'lower_limit', '기준가': 'standard_price',
+            '250최고가일': '250highest_date', '250최저가일': '250lowest_date', '250최저가대비율': '250lowest_rate',
+            '거래대비': 'trading_rate', '유통주식': 'outstanding_stock', '유통비율': 'outstanding_rate', 'PER': 'PER',
+            'PBR': 'PBR', 'EV': 'EV', 'BPS': 'BPS', 'EPS': 'EPS', 'ROE': 'ROE'
+        }
+
+        # column_names 에 있는 key 중 Text 형으로 저장 해야 할 리스트
+        text_columns = ['종목코드', '결산월', '250최고가일', '250최저가일']
+        # +, -기호가 추세를 나타내는 칼럼(영상 촬영 후 추가)
+        signed_columns = ['거래대비', '기준가', '하한가', '250최고', '250최저', '연중최고', '연중최저', '신용비율', '외인소진률']
+        dtype = {}
+        for k, v in column_names.items():  # 각 칼럼별 자료형 타입을 정한다. 아래 df.to_sql 에서 활용
+            if k in text_columns:
+                dtype[v] = Text  # text_columns 에 속한 key는 Text 형으로 저장
+            else:
+                dtype[v] = Float  # text_columns 에 속하지 않는 key는 Float 형으로 저장
+
+        # 현재 stock_finance에 저장한 데이터 가져오기(중복 체크를 위해)
+        # 만약 table_name('stock_finance') 가 daily_buy_list DB에 존재한다면 IF문 안으로 들어간다.
+        existing_data = {}
+
+        # (영상 촬영 후 아래 세 라인 추가) 모든 데이터 존재 여부를 파악하는게 아닌 10일치만 비교하기 위함
+        strformat = "%Y%m%d"
+        extract_from = datetime.date.today() - timedelta(days=10)
+        extract_from = extract_from.strftime(strformat)
+
+        if self.open_api.engine_daily_buy_list.dialect.has_table(self.open_api.engine_daily_buy_list, table_name):
+            existing_data = self.open_api.engine_daily_buy_list.execute(f"""
+                SELECT date, code FROM {table_name} WHERE date >= {extract_from}
+            """).fetchall()
+
+        today = datetime.date.today().strftime(strformat)
+
+        data = defaultdict(list)  # collections.defaultdict
+
+        chunk_size = 83  # 83개씩 데이터를 쌓아서 DB에 넣기 위함
+        if cf.max_api_call - 2 < chunk_size:  # max_api_call -2 값이 chunk_size 보다 작은 값인 경우 chunk_size 조정
+            chunk_size = cf.max_api_call - 2
+
+        item_count = 0  # 실질적으로 DB에 넣는 아이템 갯수를 기록
+        for i, c in enumerate(stock_codes_list):  # index를 얻기위해 enumerate() 사용
+            if (today, c) in existing_data:  # 이미 stock_finance에 넣은 데이터는 중복해서 넣지 않도록
+                continue
+            today = datetime.date.today().strftime(strformat)
+            data['date'].append(today)  # 날짜 칼럼 추가
+            fin_data = self.open_api.get_stock_finance(c)
+            for k, v in fin_data.items():
+                if v == '':  # 영상 촬영 후 추가되었습니다. 비어있는 문자열일 경우 None으로 대체
+                    converted = None
+                elif v and (k in signed_columns):  # v(value)가 존재하고, signed_columns(영상 촬영 후 수정)에 fin_data의 k(key)가 있으면
+                    converted = abs(float(v))  # +, -기호가 추세를 나타낼 경우 떼기 위함
+                else:
+                    converted = v
+                # dict의 get() : 딕셔너리의 key 값에 해당하는 value 값을 가져온다.
+                data[column_names.get(k, k)].append(converted)
+            logger.debug(f'{c} 금융 데이터 요청중...')
+
+            if item_count == chunk_size or i == len(stock_codes_list) - 1:  # chunk_size 단위로 저장 83개는 max_api_call 999에 최적화
+                df = DataFrame.from_dict(data)
+                logger.debug('DB에 넣는 중...')
+                logger.debug(df)
+                df.to_sql(
+                    table_name, self.open_api.engine_daily_buy_list, if_exists='append', index=False, dtype=dtype
+                )
+                data = defaultdict(list)
+                item_count = 0
+
+            item_count += 1

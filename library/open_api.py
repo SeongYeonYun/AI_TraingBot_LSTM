@@ -1,6 +1,6 @@
 from functools import partial
 
-ver = "#version 1.3.11"
+ver = "#version 1.3.14"
 print(f"open_api Version: {ver}")
 
 from library.simulator_func_mysql import *
@@ -94,6 +94,7 @@ class open_api(QAxWidget):
         # 여기서 invest_unit 설정함
         self.sf_variable_setting()
         self.ohlcv = defaultdict(list)
+        self._data = {}
 
     # 날짜 세팅
     def date_setting(self):
@@ -395,6 +396,8 @@ class open_api(QAxWidget):
             # logger.debug("opt10080_req!!!")
             # logger.debug("Get an de_deposit!!!")
             self._opt10080(rqname, trcode)
+        elif rqname == "opt10001_req":
+            self._opt10001(rqname, trcode)
         elif rqname == "send_order_req":
             pass
         else:
@@ -643,7 +646,7 @@ class open_api(QAxWidget):
             self.set_input_value("수정주가구분", 1)
             self.comm_rq_data("opt10080_req", "opt10080", 2, "1999")
 
-            if self.ohlcv['date'][-1] < self.craw_db_last_min:
+            if not self.ohlcv or self.ohlcv['date'][-1] < self.craw_db_last_min:
                 break
 
         time.sleep(TR_REQ_TIME_INTERVAL)
@@ -1102,13 +1105,13 @@ class open_api(QAxWidget):
                 # (추가) 매수 조건 함수(trade_check) ##########################################
                 # trade_check_num(실시간 조건 체크-> 실시간으로 조건 비교 하여 매수하는 경우)
                 # 고급챕터에서 수업 할 때 아래 주석을 풀어주세요!
-                # if self.sf.trade_check_num:
-                #     # 시작가를 가져온다
-                #     current_open = self.get_one_day_option_data(code, self.today, 'open')
-                #     current_price = self.get_one_day_option_data(code, self.today, 'close')
-                #     current_sum_volume = self.get_one_day_option_data(code, self.today, 'volume')
-                #     if not self.sf.trade_check(self.sf.df_realtime_daily_buy_list.loc[i], current_open, current_price, current_sum_volume):
-                #         continue
+                if self.sf.trade_check_num:
+                    # 시작가를 가져온다
+                    current_open = self.get_one_day_option_data(code, self.today, 'open')
+                    current_price = self.get_one_day_option_data(code, self.today, 'close')
+                    current_sum_volume = self.get_one_day_option_data(code, self.today, 'volume')
+                    if not self.sf.trade_check(self.sf.df_realtime_daily_buy_list.loc[i], current_open, current_price, current_sum_volume):
+                        continue
                 ###################################################################################
 
                 self.get_today_buy_list_code = code
@@ -1124,16 +1127,16 @@ class open_api(QAxWidget):
 
     # openapi 조회 카운트를 체크 하고 cf.max_api_call 횟수 만큼 카운트 되면 봇이 꺼지게 하는 함수
     def exit_check(self):
+        logger.debug(self.rq_count)
+        if self.rq_count == cf.max_api_call:
+            sys.exit(1)
+
+        # openapi 조회 count 출력
         rq_delay = datetime.timedelta(seconds=0.6)
         time_diff = datetime.datetime.now() - self.call_time
         if rq_delay > datetime.datetime.now() - self.call_time:
             time.sleep((rq_delay - time_diff).total_seconds())
-
         self.rq_count += 1
-        # openapi 조회 count 출력
-        logger.debug(self.rq_count)
-        if self.rq_count == cf.max_api_call:
-            sys.exit(1)
 
     # 매도 했는데 bot이 꺼져있을때 매도해서 possessed_item 테이블에는 없는데 all_item_db에 sell_date 안찍힌 종목들 처리해준다.
     def final_chegyul_check(self):
@@ -1196,7 +1199,7 @@ class open_api(QAxWidget):
             # 	계좌번호 = 전문 조회할 보유계좌번호
             self.set_input_value("계좌번호", self.account_number)
             # 	비밀번호 = 사용안함(공백)
-            #SetInputValue("7539"	,  "입력값 5");
+            # 	SetInputValue("비밀번호"	,  "입력값 5");
             self.comm_rq_data("opt10076_req", "opt10076", 0, "0350")
 
             if self._data['주문구분'] == '+매수':
@@ -1345,6 +1348,14 @@ class open_api(QAxWidget):
     def _receive_chejan_data(self, gubun, item_cnt, fid_list):
         logger.debug("_receive_chejan_data 함수로 들어왔습니다!!!")
         logger.debug("gubun !!! :" + gubun)
+
+        account_num = self.get_chejan_data(9201)
+
+        # 선택 계좌가 아닐 시 아무 행동도 하지 않는다
+        if self.account_number != account_num:
+            logger.info(f"{self.account_number} != {account_num}")
+            return
+
         # 체결구분 접수와 체결
         if gubun == "0":
             logger.debug("in 체결 data!!!!!")
@@ -1382,7 +1393,7 @@ class open_api(QAxWidget):
             # logger.debug("체결량!!!")
             # logger.debug(self.get_chejan_data(911))
             # logger.debug("현재가, 체결가, 실시간종가")
-            purchase_price = self.get_chejan_data(10)
+            purchase_price = abs(int(self.get_chejan_data(10)))
 
             if code:
                 # 미체결 수량이 ""가 아닌 경우
@@ -1742,4 +1753,48 @@ class open_api(QAxWidget):
                 UPDATE setting_data SET code_update = '0';
             """)
 
+    # 테마코드, 테마명 그리고 테마 그룹에 속하는 종목코드를 가져오는 함수
+    def get_theme_info(self):
+        try:
+            thema = defaultdict(list)
+            data = self.dynamicCall("GetThemeGroupList(int)", 1)  # nType – 정렬순서 (0:코드순, 1:테마순)
+            tokens = data.split(';')
+            for token in tokens:
+                thema_code, thema_name = token.split('|')
+                codes = self.get_theme_group_code(thema_code)
+                for code in codes:
+                    thema[code].append((thema_code, thema_name))
+            return thema
 
+        except Exception as e:
+            logger.critical(e)
+
+    # 테마코드에 해당하는 종목코드를 가져오는 함수
+    def get_theme_group_code(self, theme_code):
+        data = self.dynamicCall("GetThemeGroupCode(QString)", theme_code)
+        temp = []
+        for x in data.split(';'):
+            temp.append(x[1:])
+        return temp
+
+    def _opt10001(self, rqname, trcode):
+        output_keys = [
+            '종목코드', '결산월', '액면가', '자본금', '상장주식', '신용비율', '연중최고', '연중최저', '시가총액', 'ROE', 'EPS',
+            '외인소진률', '대용가', 'PER', 'PBR', 'EV', 'BPS', '매출액', '영업이익', '당기순이익', '250최고', '250최저',
+            '상한가', '하한가', '기준가', '250최고가일', '250최저가일', '250최저가대비율', '거래대비', '유통주식', '유통비율'
+        ]
+        result = {}
+        for k in output_keys:
+            result[k] = self._get_comm_data(trcode, rqname, 0, k)
+
+        self._data = result
+
+        # 금융 데이터 요청 함수
+
+    def get_stock_finance(self, code):
+        # koastudio 좌측 하단 TR목록 / opt10001 클릭 후 샘플 참고
+        self.set_input_value('종목코드', code)  # 입력 데이터 설정
+        self.comm_rq_data('opt10001_req', 'opt10001', '0', '0001')  # opt10001 TR 을 키움증권 서버에 요청
+        # CommRqData 이후 키움증권 서버에서 receive_tr_data 함수 호출 -> receive_tr_data 함수 에서 _opt10001 함수 호출
+        # self._data 는 _opt10001 함수에서 저장 된 값
+        return self._data

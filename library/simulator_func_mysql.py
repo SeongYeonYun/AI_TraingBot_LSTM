@@ -109,7 +109,7 @@ class simulator_func_mysql:
         ###!@####################################################################################################################
         # 아래 부터는 알고리즘 별로 별도의 설정을 해주는 부분
 
-        if self.simul_num in (1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14):
+        if self.simul_num in (1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15):
             # 시뮬레이팅 시작 일자(분 별 시뮬레이션의 경우 최근 1년 치 데이터만 있기 때문에 start_date 조정 필요)
             self.simul_start_date = "20190101"
             self.use_ai = True  # ai 알고리즘 사용 시 True 사용 안하면 False
@@ -201,7 +201,7 @@ class simulator_func_mysql:
                 self.ai_filter_num = 1  # ai 알고리즘 선택
 
             # 실시간 조건 매수
-            elif self.simul_num in (12, 13, 14):
+            elif self.simul_num in (12, 13, 14, 15, 16):
                 self.simul_start_date = "20200101"
                 self.use_min = True
                 # 아침 9시에만 매수를 하고 싶은 경우 True, 9시가 아니어도 매수를 하고 싶은 경우 False(분별 시뮬레이션, trader 적용 가능 / 일별 시뮬레이션은 9시에만 매수, 매도)
@@ -222,6 +222,14 @@ class simulator_func_mysql:
                 elif self.simul_num == 14:
                     self.trade_check_num = 3
                     self.rarry_k = 0.5
+
+                elif self.simul_num == 15:
+                    self.ai_filter_num = 3  # ai 알고리즘 선택
+                    self.use_min = False
+
+                elif self.simul_num == 16:
+                    self.ai_filter_num = 4  # ai 알고리즘 선택
+                    self.use_min = False
 
         elif self.simul_num == 2:
             # 시뮬레이팅 시작 일자

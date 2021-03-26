@@ -1,7 +1,7 @@
-ver = "#version 1.3.1"
+ver = "#version 1.4.1"
 print(f"daily_buy_list Version: {ver}")
 
-from sqlalchemy import event
+from sqlalchemy import event, String
 
 from library.daily_crawler import *
 from library import cf
@@ -56,41 +56,63 @@ class daily_buy_list():
             # daily 테이블 존재하는지 확인
             if self.is_table_exist_daily_buy_list(self.date_rows[k][0]) == True:
                 # continue
-                print(self.date_rows[k][0] + "테이블은 존재한다 !! continue!! ")
-                continue
-            else:
-                print(self.date_rows[k][0] + "테이블은 존재하지 않는다 !!!!!!!!!!! table create !! ")
+                empty = not bool(
+                    self.engine_daily_buy_list.execute(f"""
+                        SELECT 1 FROM `{self.date_rows[k][0]}`
+                    """).fetchall()
+                )
 
-                multi_list = list()
+                if not empty:
+                    print(self.date_rows[k][0] + "테이블은 존재한다 !! continue!! ")
+                    continue
+                else:
+                    # to_sql() 도중 콜렉터가 꺼질 시 테이블만 생성하고 데이터를 못 넣는 경우에 대비하여 비어있을 시 테이블을 드랍
+                    self.engine_daily_buy_list.execute(f"""
+                        DROP TABLE `{self.date_rows[k][0]}`
+                    """)
 
-                for i in range(len(self.stock_item_all)):
-                    code = self.stock_item_all[i][1]
-                    code_name = self.stock_item_all[i][0]
-                    if self.is_table_exist_daily_craw(code, code_name) == False:
-                        print("daily_craw db에 " + str(code_name) + " 테이블이 존재하지 않는다 !!")
-                        continue
+            print(self.date_rows[k][0] + "테이블은 존재하지 않는다 !!!!!!!!!!! table create !! ")
 
-                    sql = "select * from `" + self.stock_item_all[i][0] + "` where date = '{}' group by date"
-                    # daily_craw에서 해당 날짜의 row를 한 줄 가져오는 것
-                    rows = self.engine_daily_craw.execute(sql.format(self.date_rows[k][0])).fetchall()
-                    multi_list += rows
+            multi_list = list()
 
-                if len(multi_list) != 0:
-                    df_temp = DataFrame(multi_list,
-                                        columns=['index', 'date', 'check_item', 'code', 'code_name', 'd1_diff_rate',
-                                                 'close', 'open', 'high', 'low',
-                                                 'volume', 'clo5', 'clo10', 'clo20', 'clo40', 'clo60', 'clo80',
-                                                 'clo100', 'clo120', "clo5_diff_rate", "clo10_diff_rate",
-                                                 "clo20_diff_rate", "clo40_diff_rate", "clo60_diff_rate",
-                                                 "clo80_diff_rate", "clo100_diff_rate", "clo120_diff_rate",
-                                                 'yes_clo5', 'yes_clo10', 'yes_clo20', 'yes_clo40', 'yes_clo60',
-                                                 'yes_clo80',
-                                                 'yes_clo100', 'yes_clo120',
-                                                 'vol5', 'vol10', 'vol20', 'vol40', 'vol60', 'vol80',
-                                                 'vol100', 'vol120'
-                                                 ])
+            for i in range(len(self.stock_item_all)):
+                code = self.stock_item_all[i][1]
+                code_name = self.stock_item_all[i][0]
+                if self.is_table_exist_daily_craw(code, code_name) == False:
+                    print("daily_craw db에 " + str(code_name) + " 테이블이 존재하지 않는다 !!")
+                    continue
 
-                    df_temp.to_sql(name=self.date_rows[k][0], con=self.engine_daily_buy_list, if_exists='replace')
+                sql = "select * from `" + self.stock_item_all[i][0] + "` where date = '{}' group by date"
+                # daily_craw에서 해당 날짜의 row를 한 줄 가져오는 것
+                rows = self.engine_daily_craw.execute(sql.format(self.date_rows[k][0])).fetchall()
+                multi_list += rows
+
+            if len(multi_list) != 0:
+                df_temp = DataFrame(multi_list,
+                                    columns=['index', 'date', 'check_item', 'code', 'code_name', 'd1_diff_rate',
+                                             'close', 'open', 'high', 'low',
+                                             'volume', 'clo5', 'clo10', 'clo20', 'clo40', 'clo60', 'clo80',
+                                             'clo100', 'clo120', "clo5_diff_rate", "clo10_diff_rate",
+                                             "clo20_diff_rate", "clo40_diff_rate", "clo60_diff_rate",
+                                             "clo80_diff_rate", "clo100_diff_rate", "clo120_diff_rate",
+                                             'yes_clo5', 'yes_clo10', 'yes_clo20', 'yes_clo40', 'yes_clo60',
+                                             'yes_clo80',
+                                             'yes_clo100', 'yes_clo120',
+                                             'vol5', 'vol10', 'vol20', 'vol40', 'vol60', 'vol80',
+                                             'vol100', 'vol120'
+                                             ])
+                df_temp.to_sql(
+                    name=self.date_rows[k][0],
+                    con=self.engine_daily_buy_list,
+                    if_exists='replace'
+                )
+                try:
+                    self.engine_daily_buy_list.execute(f"""
+                        CREATE INDEX ix_{self.date_rows[k][0]}_code
+                        ON daily_buy_list.`{self.date_rows[k][0]}` (code(6))
+                    """)
+                except Exception:
+                    pass
 
     def get_stock_item_all(self):
         print("get_stock_item_all!!!!!!")

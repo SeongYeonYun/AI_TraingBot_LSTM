@@ -1,5 +1,5 @@
 
-# version 0.0.3
+# version 0.0.4
 
 # dart : http://dart.fss.or.kr/
 # 오픈Dart: https://opendart.fss.or.kr/
@@ -20,6 +20,8 @@
 #       - 종속기업이 없는 경우는 연결재무제표가 없다 (DB에도 저장 안됨)
 
 import datetime
+import warnings
+warnings.simplefilter(action='ignore', category=UserWarning)
 
 import dart_fss as dart
 import pymysql
