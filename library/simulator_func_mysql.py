@@ -125,19 +125,19 @@ class simulator_func_mysql:
             # 초기 투자자금(시뮬레이션에서의 초기 투자 금액. 모의투자는 신청 당시의 금액이 초기 투자 금액이라고 보시면 됩니다)
             # 주의! start_invest_price 는 모의투자 초기 자본금과 별개. 시뮬레이션에서만 적용.
             # 키움증권 모의투자의 경우 초기에 모의투자 신청 할 때 설정 한 금액으로 자본금이 설정됨
-            self.start_invest_price = 10000000
+            self.start_invest_price = 50000000
 
             # 매수 금액
             self.invest_unit = 1000000
 
             # 자산 중 최소로 남겨 둘 금액
-            self.limit_money = 3000000
+            self.limit_money = 30000
 
             # 익절 수익률 기준치
             self.sell_point = 10
 
             # 손절 수익률 기준치
-            self.losscut_point = -2
+            self.losscut_point = -3
 
             # 실전/모의 봇 돌릴 때 매수하는 순간 종목의 최신 종가 보다 1% 이상 오른 경우 사지 않도록 하는 설정(변경 가능)
             self.invest_limit_rate = 1.01
@@ -174,7 +174,7 @@ class simulator_func_mysql:
                 self.diff_point = 1  # 단위 %
                 # 분별 시뮬레이션 옵션
                 self.use_min = True
-                self.only_nine_buy = True
+                self.only_nine_buy = False
 
                 if self.simul_num == 8:
                     # 매수 리스트 설정 알고리즘 번호 (절대모멘텀 query ver)
@@ -204,12 +204,15 @@ class simulator_func_mysql:
             elif self.simul_num in (12, 13, 14, 15, 16):
                 self.simul_start_date = "20200101"
                 self.use_min = True
+                self.use_ai = True  # ai 알고리즘 사용 시 True 사용 안하면 False
                 # 아침 9시에만 매수를 하고 싶은 경우 True, 9시가 아니어도 매수를 하고 싶은 경우 False(분별 시뮬레이션, trader 적용 가능 / 일별 시뮬레이션은 9시에만 매수, 매도)
                 self.only_nine_buy = False
+                self.ai_filter_num = 4
                 # 실시간 조건 매수 옵션 (고급 챕터에서 소개) self.only_nine_buy 옵션을 반드시 False로 설정해야함
                 self.trade_check_num = 1  # 실시간 조건 매수 알고리즘 선택 (1,2,3..)
                 # 특정 거래대금 보다 x배 이상 증가 할 경우 매수
-                self.volume_up = 2
+                self.volume_up = 1.3
+                self.sell_point = 5
                 #
                 if self.simul_num == 13:
                     self.trade_check_num = 2
