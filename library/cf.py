@@ -41,8 +41,8 @@ TR_REQ_TIME_INTERVAL_LONG = 1
 # api를 최대 몇 번까지 호출 하고 봇을 끌지 설정 하는 옵션
 max_api_call = 999
 
-# dart api key (고급클래스에서 소개)
+# dart api key 
 dart_api_key = 'ba8197146bee98764450c7f74d568416c81b6d7f'
 
-# etf 사용 여부 (고급클래스에서 소개)
+# etf 사용 여부
 use_etf = False
